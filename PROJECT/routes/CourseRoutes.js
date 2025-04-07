@@ -16,7 +16,7 @@ router.post('/createCourse',auth,isInstructor,CreateCourse);
 router.get('/getAllCourses',getAllCourse);
 
 //get Course Details
-router.get('/getCourseDetails',getCourse);
+router.get('/getCourseDetails/:courseId',getCourse);
 
 // Edit Course routes
 router.post("/editCourse", auth, isInstructor, editCourse)

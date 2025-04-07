@@ -10,17 +10,21 @@ const initialState={
 const viewCourseSlice=createSlice({
     name:"viewCourse",
     initialState,
-    reducres:{
+    reducers:{
         setcourseSectionData:(state,action)=>{
+           
             state.courseSectionData=action.payload;
         },
         setcourseEntireData:(state,action)=>{
+           
             state.courseEntireData=action.payload;
         },
         setcompletedLectures:(state,action)=>{
+            
             state.completedLectures=action.payload;
         },
         settotalNoOfLectures:(state,action)=>{
+           
             state.totalNoOfLectures=action.payload;
         },
         updateCompletedlectures:(state,action)=>{

@@ -10,6 +10,7 @@ exports.CreateSubSection=async(req,res)=>{
         
         
         const VideoFile=req.files.VideoURL;
+        console.log("xdcfvgbhnjmkkmjuhytrf",VideoFile)
         
         
 
@@ -25,14 +26,21 @@ exports.CreateSubSection=async(req,res)=>{
 
         //upload video to cloudinary
         const VideoURLFILE=await UploadImageToCloudinary(VideoFile,process.env.FOLDER_NAME)
+        if (!VideoURLFILE || VideoURLFILE.error) {
+            return res.status(500).json({
+              success: false,
+              message: "Video upload failed",
+              error: VideoURLFILE.message || "Unknown error",
+            });
+          }
 
-         
+        
         //create Subsection
         const NewSubSection=await SubSection.create({
             Tittle,
             TimeDuration:`${VideoURLFILE.duration}`,
             Description,
-            VideoURL:VideoURLFILE.secure_url
+            VideoUrl:VideoURLFILE.secure_url
         })
 
 
@@ -46,6 +54,7 @@ exports.CreateSubSection=async(req,res)=>{
 
 
         //res
+        console.log("hello")
         return res.status(201).json({
             success:true,
             data:UpdateSection,

@@ -20,6 +20,7 @@ exports.mail=async(email,title,body)=>{
             subject:`${title}`,
             html:body
         })
+        console.log("integrated",info)
 
         return info;
 

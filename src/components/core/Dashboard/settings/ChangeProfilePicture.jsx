@@ -62,8 +62,8 @@ export default function ChangeProfilePicture() {
       <div className="flex items-center justify-between rounded-md border-[1px] border-richblack-700 bg-richblack-800 p-8 px-12 text-richblack-5">
         <div className="flex items-center gap-x-4">
           <img
-            src={previewSource || user?.image}
-            alt={`profile-${user?.firstName}`}
+            src={previewSource || user?.Image}
+            alt={`profile-${user?.FirstName}`}
             className="aspect-square w-[78px] rounded-full object-cover"
           />
           <div className="space-y-2">
@@ -85,7 +85,8 @@ export default function ChangeProfilePicture() {
               </button>
               <IconButton
                 text={loading ? "Uploading..." : "Upload"}
-                onclick={handleFileUpload}
+                onClick={handleFileUpload}
+                customclasses={'bg-yellow-50 py-2 px-4 flex item-center gap-2 text-richblack-900 rounded-md'}
               >
                 {!loading && (
                   <FiUpload className="text-lg text-richblack-900" />

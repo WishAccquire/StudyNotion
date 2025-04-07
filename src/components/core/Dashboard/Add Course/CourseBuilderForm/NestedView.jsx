@@ -43,20 +43,22 @@ function NestedView({ handleChnagEditSectionName }) {
         }
         setConfirmationModal(null);
     }
+    console.log("cfvgbhgvcfvg",course)
     return (
-        <div className='mt-2 rounded-lg bg-richblack-700 p-6 px-8'>
+        <div className="rounded-lg bg-richblack-700 p-6 px-8"
+        id="nestedViewContainer">
             <div className='text-white'>
                 {
                     course?.CourseContent?.map((Section) => (
                         <details key={Section._id} open>
-                            <summary className='flex item-centre justify-between gap-x-3 border-b-2'>
+                            <summary className='flex cursor-pointer item-centre justify-between gap-x-3 border-b-2 border-b-richblack-600'>
                                 <div className='flex items-center gap-x-3'>
-                                    <RxDropdownMenu className='text-white' size={20} />
-                                    <p>{Section.SectionName}</p>
+                                    <RxDropdownMenu className="text-2xl text-richblack-50" size={20} />
+                                    <p className="font-semibold text-richblack-50">{Section.SectionName}</p>
                                 </div>
 
                                 <div className='flex items-center gap-x-3'>
-                                    <button onClick={() => { handleChnagEditSectionName(Section._id, Section.SectionName) }}><MdModeEdit /></button>
+                                    <button onClick={() => { handleChnagEditSectionName(Section._id, Section.SectionName) }}><MdModeEdit className="text-xl text-richblack-300"/></button>
                                     <button onClick={() => {
                                         setConfirmationModal({
                                             text1: "Delete this Section",
@@ -66,8 +68,8 @@ function NestedView({ handleChnagEditSectionName }) {
                                             btn1Handler: () => handleDeleteSection(Section._id),
                                             btn2Handler: () => setConfirmationModal(null),
                                         })
-                                    }}><AiFillDelete /></button>
-                                    <span className='text-richblack-25 font-semibold'>|</span>
+                                    }}><AiFillDelete className="text-xl text-richblack-300"/></button>
+                                    <span className="font-medium text-richblack-300">|</span>
                                     <IoIosArrowDropdown className='text-3xl text-richblack-25' size={20} />
 
                                 </div>
@@ -78,16 +80,16 @@ function NestedView({ handleChnagEditSectionName }) {
                             <div>
                                 {
                                      Section?.Subsection?.map((data) => (
-                                        <div key={data._id} onClick={() => setviewSubSection(data)} className='flex items-center justify-between gap-x-3 border-b-3'>
+                                        <div key={data._id} onClick={() => setviewSubSection(data)} className='flex items-center justify-between gap-x-3 cursor-pointer border-b-3'>
 
-                                            <div className="flex gap-x-3">
-                                                <RxDropdownMenu className='text-white' size={20} />
-                                                <p>{data.Tittle}</p>
+                                            <div className="flex items-center gap-x-3 py-2 ">
+                                                <RxDropdownMenu className="text-2xl text-richblack-50" size={20} />
+                                                <p className="font-semibold text-richblack-50">{data.Tittle}</p>
 
                                             </div>
                                             
                                             <div className='flex items-center gap-x-3' onClick={(e)=>e.stopPropagation()}>
-                                                <button onClick={() => { setEditSubSection({ ...data, sectionId: Section._id }) }}><MdModeEdit /></button>
+                                                <button onClick={() => { setEditSubSection({ ...data, sectionId: Section._id }) }}><MdModeEdit className="text-xl text-richblack-300"/></button>
                                                 <button onClick={() => {
                                                     setConfirmationModal({
                                                         text1: "Delete this Lecture",
@@ -97,14 +99,14 @@ function NestedView({ handleChnagEditSectionName }) {
                                                         btn1Handler: () => handleDeleteSubSection(data._id, Section._id),
                                                         btn2Handler: () => setConfirmationModal(null),
                                                     })
-                                                }}><AiFillDelete />
+                                                }}><AiFillDelete className="text-xl text-richblack-300"/>
                                                 </button>
 
                                             </div>
                                         </div>
                                     ))
                                 }
-                                <button onClick={() => { setAddSubSection(Section._id) }} className='mt-4 flex items-center'>
+                                <button onClick={() => { setAddSubSection(Section._id) }} className="mt-3 flex items-center gap-x-1 text-yellow-50">
                                     <IoAdd />
                                     <p>Add Lecture</p>
                                 </button>

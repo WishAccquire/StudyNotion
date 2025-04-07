@@ -21,11 +21,11 @@ const CourseSchema=new mongoose.Schema({
     type:mongoose.Schema.Types.ObjectId,
     ref:"RatingAndReview"
   }],
-  Instructor:[{
+  Instructor:{
     type:mongoose.Schema.Types.ObjectId,
     ref:"User",
     required:true,
-  }],
+  },
   CourseContent:[{
     type:mongoose.Schema.Types.ObjectId,
     ref:"Section",
@@ -64,6 +64,11 @@ const CourseSchema=new mongoose.Schema({
     type: Date,
     default: Date.now
    },
+   timeDuration:{
+    type:String,
+   },progressPercentage:{
+    type:Number,
+   }
 
 })
 

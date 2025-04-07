@@ -37,7 +37,7 @@ export default function EditProfile() {
           </h2>
           <div className="flex flex-col gap-5 lg:flex-row">
             <div className="flex flex-col gap-2 lg:w-[48%]">
-              <label htmlFor="FirstName" className="lable-style">
+              <label htmlFor="FirstName" className="lable-style text-richblack-25">
                 First Name
               </label>
               <input
@@ -45,7 +45,7 @@ export default function EditProfile() {
                 name="FirstName"
                 id="FirstName"
                 placeholder="Enter first name"
-                className="form-style"
+                className="form-style bg-richblack-700 px-4 py-3 rounded-md border-b-white border-[0.5px] text-xl text-richblack-200"
                 {...register("FirstName", { required: true })}
                 defaultValue={user?.FirstName}
               />
@@ -56,7 +56,7 @@ export default function EditProfile() {
               )}
             </div>
             <div className="flex flex-col gap-2 lg:w-[48%]">
-              <label htmlFor="LastName" className="lable-style">
+              <label htmlFor="LastName" className="lable-style  text-richblack-25">
                 Last Name
               </label>
               <input
@@ -64,7 +64,7 @@ export default function EditProfile() {
                 name="LastName"
                 id="LastName"
                 placeholder="Enter first name"
-                className="form-style"
+                className="form-style  bg-richblack-700 px-4 py-3 rounded-md border-b-white border-[0.5px] text-xl text-richblack-200"
                 {...register("LastName", { required: true })}
                 defaultValue={user?.LastName}
               />
@@ -78,14 +78,14 @@ export default function EditProfile() {
 
           <div className="flex flex-col gap-5 lg:flex-row">
             <div className="flex flex-col gap-2 lg:w-[48%]">
-              <label htmlFor="DOB" className="lable-style">
+              <label htmlFor="DOB" className="lable-style  text-richblack-25">
                 Date of Birth
               </label>
               <input
                 type="date"
                 name="DOB"
                 id="DOB"
-                className="form-style"
+                className="form-style  bg-richblack-700 px-4 py-3 rounded-md border-b-white border-[0.5px] text-xl text-richblack-200"
                 {...register("DOB", {
                   required: {
                     value: true,
@@ -105,15 +105,15 @@ export default function EditProfile() {
               )}
             </div>
             <div className="flex flex-col gap-2 lg:w-[48%]">
-              <label htmlFor="Gender" className="lable-style">
+              <label htmlFor="Gender" className="lable-style  text-richblack-25">
                 Gender
               </label>
               <select
                 type="text"
                 name="Gender"
                 id="Gender"
-                className="form-style"
-                {...register("gender", { required: true })}
+                className="form-style  bg-richblack-700 px-4 py-3 rounded-md border-b-white border-[0.5px] text-xl text-richblack-200"
+                {...register("Gender", { required: true })}
                 defaultValue={user?.AdditionalDetails?.Gender}
               >
                 {genders.map((ele, i) => {
@@ -134,7 +134,7 @@ export default function EditProfile() {
 
           <div className="flex flex-col gap-5 lg:flex-row">
             <div className="flex flex-col gap-2 lg:w-[48%]">
-              <label htmlFor="ContactNumber" className="lable-style">
+              <label htmlFor="ContactNumber" className="lable-style  text-richblack-25">
                 Contact Number
               </label>
               <input
@@ -142,8 +142,8 @@ export default function EditProfile() {
                 name="ContactNumber"
                 id="ContactNumber"
                 placeholder="Enter Contact Number"
-                className="form-style"
-                {...register("contactNumber", {
+                className="form-style  bg-richblack-700 px-4 py-3 rounded-md border-b-white border-[0.5px] text-xl text-richblack-200"
+                {...register("ContactNumber", {
                   required: {
                     value: true,
                     message: "Please enter your Contact Number.",
@@ -160,16 +160,16 @@ export default function EditProfile() {
               )}
             </div>
             <div className="flex flex-col gap-2 lg:w-[48%]">
-              <label htmlFor="about" className="lable-style">
+              <label htmlFor="About" className="lable-style  text-richblack-25">
                 About
               </label>
               <input
                 type="text"
-                name="about"
-                id="about"
+                name="About"
+                id="About"
                 placeholder="Enter Bio Details"
-                className="form-style"
-                {...register("about", { required: true })}
+                className="form-style  bg-richblack-700 px-4 py-3 rounded-md border-b-white border-[0.5px] text-xl text-richblack-200"
+                {...register("About", { required: true })}
                 defaultValue={user?.AdditionalDetails?.About}
               />
               {errors.about && (
@@ -190,7 +190,7 @@ export default function EditProfile() {
           >
             Cancel
           </button>
-          <IconButton type="submit" text="Save"  className="text-white"/>
+          <IconButton type="submit" text="Save"  customclasses="text-white bg-yellow-50 px-5 py-3 rounded-md"/>
         </div>
       </form>
     </>

@@ -110,7 +110,7 @@ function CourseInformation() {
                 }
     
                 setLoading(true);
-                console.log("hello123")
+                console.log("hello123",formData)
                 const result=await editCourseDetails(formData,token);
                 setLoading(false);
                 if(result){

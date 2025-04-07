@@ -11,6 +11,7 @@ import LearningLanguage from '../components/core/homepage/LearningLanguage';
 import InstructorSection from '../components/core/homepage/InstructorSection';
 import Footer from "../components/common/footer"
 import ExploreMore from '../components/core/homepage/ExploreMore';
+import ReviewSlider from '../components/common/ReviewSlider';
 
 
 function Home() {
@@ -142,7 +143,7 @@ function Home() {
                 <h2 className='text-center text-4xl font-semibold mt-10'>Review from Other Learners</h2>
                 
         </div>
-
+          <ReviewSlider />
         {/*Section4 ->footer */}
         <Footer className="w-screen"/>
         

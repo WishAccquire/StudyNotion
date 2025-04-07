@@ -9,6 +9,7 @@ import IconButton from "../../../common/IconButton"
 
 export default function UpdatePassword() {
   const { token } = useSelector((state) => state.auth)
+  const {user}=useSelector((state)=>state.profile)
   const navigate = useNavigate()
 
   const [showOldPassword, setShowOldPassword] = useState(false)
@@ -23,7 +24,13 @@ export default function UpdatePassword() {
   const submitPasswordForm = async (data) => {
     // console.log("password Data - ", data)
     try {
-      await changePassword(token, data)
+      const updatedata={
+        ...data,
+        Email:user?.Email,
+      }
+      
+      
+      await changePassword(token, updatedata)
     } catch (error) {
       console.log("ERROR MESSAGE - ", error.message)
     }
@@ -35,21 +42,21 @@ export default function UpdatePassword() {
         <div className="my-10 flex flex-col gap-y-6 rounded-md border-[1px] border-richblack-700 bg-richblack-800 p-8 px-12">
           <h2 className="text-lg font-semibold text-richblack-5">Password</h2>
           <div className="flex flex-col gap-5 lg:flex-row">
-            <div className="relative flex flex-col gap-2 lg:w-[48%]">
-              <label htmlFor="oldPassword" className="lable-style">
+            <div className="relative flex flex-col gap-2 lg:w-[48%] ">
+              <label htmlFor="PassWord" className="lable-style text-richblack-25">
                 Current Password
               </label>
               <input
                 type={showOldPassword ? "text" : "password"}
-                name="oldPassword"
-                id="oldPassword"
+                name="PassWord"
+                id="PassWord"
                 placeholder="Enter Current Password"
-                className="form-style"
-                {...register("oldPassword", { required: true })}
+                className="form-style   bg-richblack-700 px-4 py-3 rounded-md border-b-white border-[0.5px] text-xl text-richblack-200 items-center"
+                {...register("PassWord", { required: true })}
               />
               <span
                 onClick={() => setShowOldPassword((prev) => !prev)}
-                className="absolute right-3 top-[38px] z-[10] cursor-pointer"
+                className="absolute right-3 top-[44px] z-[10] cursor-pointer  "
               >
                 {showOldPassword ? (
                   <AiOutlineEyeInvisible fontSize={24} fill="#AFB2BF" />
@@ -64,20 +71,20 @@ export default function UpdatePassword() {
               )}
             </div>
             <div className="relative flex flex-col gap-2 lg:w-[48%]">
-              <label htmlFor="newPassword" className="lable-style">
+              <label htmlFor="NewPassWord" className="lable-style text-richblack-25">
                 New Password
               </label>
               <input
                 type={showNewPassword ? "text" : "password"}
-                name="newPassword"
-                id="newPassword"
+                name="NewPassWord"
+                id="NewPassWord"
                 placeholder="Enter New Password"
-                className="form-style"
-                {...register("newPassword", { required: true })}
+                className="form-style  bg-richblack-700 px-4 py-3 rounded-md border-b-white border-[0.5px] text-xl text-richblack-200"
+                {...register("NewPassWord", { required: true })}
               />
               <span
                 onClick={() => setShowNewPassword((prev) => !prev)}
-                className="absolute right-3 top-[38px] z-[10] cursor-pointer"
+                className="absolute right-3 top-[44px] z-[10] cursor-pointer"
               >
                 {showNewPassword ? (
                   <AiOutlineEyeInvisible fontSize={24} fill="#AFB2BF" />
@@ -85,7 +92,7 @@ export default function UpdatePassword() {
                   <AiOutlineEye fontSize={24} fill="#AFB2BF" />
                 )}
               </span>
-              {errors.newPassword && (
+              {errors.NewPassWord && (
                 <span className="-mt-1 text-[12px] text-yellow-100">
                   Please enter your New Password.
                 </span>
@@ -102,7 +109,7 @@ export default function UpdatePassword() {
           >
             Cancel
           </button>
-          <IconButton type="submit" text="Update" />
+          <IconButton type="submit" text="Update" customclasses={'bg-yellow-50 px-4 py-3 rounded-md text-white'} />
         </div>
       </form>
     </>

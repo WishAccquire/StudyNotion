@@ -24,6 +24,10 @@ import CourseBuilderForm from "./components/core/Dashboard/Add Course/CourseBuil
 import MyCourses from "./components/core/Dashboard/My Courses/MyCourses.jsx";
 import EditCourse from "./components/core/Dashboard/EditCouse/index.jsx";
 import Catalog from "./pages/Catalog.jsx";
+import CourseDetails from "./pages/CourseDetails.jsx";
+import ViewCourse from "./pages/ViewCourse.jsx";
+import VideoDetails from "./components/core/ViewCourse/VideoDetails.jsx";
+import Instructor from "./components/core/Dashboard/Instructor DashBoard/Instructor.jsx";
 function App() {
   const { user } = useSelector((state) => state.profile)
   return (
@@ -31,10 +35,11 @@ function App() {
       <Navbar/>
       <Routes>
         <Route path='/' element={<Home/>} />
-        <Route path="/about" element={<OpenRoute><About/></OpenRoute>} />
+        <Route path="/about" element={<About/>} />
         <Route path='catalog/:catalogName' element={<Catalog/>}/>
+        <Route path='courses/:courseId' element={<CourseDetails/>}/>
         
-        <Route path="/contact" element={<OpenRoute><ContactUS/></OpenRoute>}/>
+        <Route path="/contact" element={<ContactUS/>}/>
         <Route path="signup" element={<OpenRoute><Signup/></OpenRoute>} />
         <Route path="login" element={<OpenRoute><Login/></OpenRoute>} />
         <Route path="forgot-password" element={<OpenRoute><ForgotPassword/></OpenRoute>} />
@@ -44,6 +49,8 @@ function App() {
         <Route element={<PrivateRoute><Dashboard/></PrivateRoute>}>
                 <Route path="dashboard/my-profile" element={<MyProfile/>} />
                 <Route path="dashboard/Settings" element={<Settings />} />
+                                <Route path="dashboard/my-profile" element={<MyProfile/>} />
+
         
 
                {
@@ -61,10 +68,24 @@ function App() {
                 <Route path="dashboard/add-course" element={<AddCourse/>}/>
                 <Route path="dashboard/my-courses" element={<MyCourses/>}/>
                 <Route path="dashboard/edit-course/:courseId" element={<EditCourse/>}/>
+                <Route path="dashboard/instructor" element={<Instructor/>} />
+
                
                 </>
                 )
               }
+        </Route>
+
+        <Route>
+          <Route element={<PrivateRoute><ViewCourse/></PrivateRoute>}>
+          {
+            user?.AccountType===ACCOUNT_TYPE.STUDENT && (
+              <>
+              <Route path="view-course/:courseId/section/:sectionId/sub-section/:subSectionId"  element={<VideoDetails/>}/>
+              </>
+            )
+          }
+          </Route>
         </Route>
         <Route path="step2" elements={<OpenRoute><CourseBuilderForm/></OpenRoute>}/>
         <Route path="*" element={<Error/>}/>

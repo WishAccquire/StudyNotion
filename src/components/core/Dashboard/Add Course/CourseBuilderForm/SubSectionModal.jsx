@@ -98,6 +98,7 @@ function SubSectionModal({ modalData, setModalData, add = false, view = false, e
     formData.append("Description", data.lectureDesc);
     formData.append("Tittle", data.lectureTittle);
     const videoFile = data.lectureVideo instanceof File ? data.lectureVideo : null;
+    
 
   if (videoFile) {
     formData.append("VideoURL", videoFile);
@@ -123,16 +124,16 @@ function SubSectionModal({ modalData, setModalData, add = false, view = false, e
   }
 
   return (
-    <div>
+    <div className="fixed inset-0 z-[1000] !mt-0 grid h-screen w-screen place-items-center overflow-auto bg-white bg-opacity-10 backdrop-blur-sm">
 
-      <div className='text-white bg-[#161D29] p-6 rounded-lg'>
-        <div>
-          <p>{view && "Viewing"} {add && "Adding"} {edit && "Editing"} Lecture</p>
+      <div className="my-10 w-11/12 max-w-[700px] rounded-lg border border-richblack-400 bg-richblack-800">
+        <div className="flex items-center justify-between rounded-t-lg bg-richblack-700 p-5">
+          <p className="text-xl font-semibold text-richblack-5">{view && "Viewing"} {add && "Adding"} {edit && "Editing"} Lecture</p>
           <button onClick={() => (!loading ? setModalData(null) : {})}>
-            <MdCancel />
+            <MdCancel className="text-2xl text-richblack-5" />
           </button>
         </div>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 px-8 py-10">
           <Upload
             name="lectureVideo"
             label="Lecture Video"
@@ -144,28 +145,30 @@ function SubSectionModal({ modalData, setModalData, add = false, view = false, e
             editData={edit ? modalData.VideoURL : null} />
 
           <div>
-            <label htmlFor='lectureTittle'>Lecture Title</label>
+            <label htmlFor='lectureTittle' className="text-sm text-richblack-5" >Lecture Title  {!view && <sup className="text-pink-200">*</sup>}</label>
             <input id="lectureTittle"
               placeholder='Enter Lecture Tittle'
               {...register("lectureTittle", { required: true })}
               className='w-full bg-[#2C333F] p-3 mt-1 rounded-lg' />
 
-            {errors.lectureTittle && (<span>Lecture Tittle is required</span>)}
+            {errors.lectureTittle && (<span className="ml-2 text-xs tracking-wide text-pink-200">Lecture Tittle is required</span>)}
           </div>
 
-          <div>
-            <label htmlFor='lectureDesc'>Lecture Description</label>
+          <div className="flex flex-col space-y-2">
+            <label htmlFor='lectureDesc' className="text-sm text-richblack-5" >Lecture Description{" "}
+            {!view && <sup className="text-pink-200">*</sup>}</label>
+
             <textarea id="lectureDesc"
               placeholder='Enter Lecture Tittle'
               {...register("lectureDesc", { required: true })} 
               className='w-full bg-[#2C333F] p-3 mt-1 rounded-lg'/>
 
-            {errors.lectureDesc && (<span>Lecture Description is required</span>)}
+            {errors.lectureDesc && (<span className="ml-2 text-xs tracking-wide text-pink-200">Lecture Description is required</span>)}
           </div>
           {
             !view && (
-              <div>
-                <IconButton text={loading ? "Loading": edit ? "Save Changes":"Save"}  />
+              <div className="flex justify-end">
+                <IconButton text={loading ? "Loading": edit ? "Save Changes":"Save"} customclasses={'bg-yellow-50 text-white font-semibold py-[8px] rounded-md px-[12px]'} />
               </div>
             )
           }

@@ -9,6 +9,7 @@ import StatsComponent from '../components/core/AboutPage/States'
 import LearningGrid from '../components/core/AboutPage/LearningGrid'
 import ContactForm from '../components/core/AboutPage/ContactForm'
 import Footer from "../components/common/footer"
+import ReviewSlider from '../components/common/ReviewSlider'
 
 function About() {
   return (
@@ -76,7 +77,7 @@ function About() {
          <section className='mx-auto max-w-maxContent my-16'>
             <ContactForm/>
          </section>
-
+         <div className='flex justify-center mx-auto'><ReviewSlider/></div>
          <Footer/>
         
 

@@ -1,13 +1,36 @@
 import { RiEditBoxLine } from "react-icons/ri"
-import { useSelector } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
-
+import { useCallback } from "react"
 import { formattedDate } from "../../../utils/dataFormatter"
 import IconButton from "../../common/IconButton"
+import { useEffect } from "react"
+import { getUserDetails } from "../../../services/operations/profileAPI"
+import { setUser } from "../../../slices/profileSlice"
 
 export default function MyProfile() {
   const { user } = useSelector((state) => state.profile)
+  const {token}=useSelector((state)=>state.auth)
+  const dispatch=useDispatch();
   const navigate = useNavigate()
+
+  
+  useEffect(() => {
+    if (!token) return;
+    
+    const fetchUser = async () => {
+      console.log("hello")
+      const response=await getUserDetails(token, navigate);
+      
+      dispatch(setUser(response))
+    };
+  
+    fetchUser();
+      
+    
+  }, [token]); 
+  
+  console.log("username",user)
 
   return (
     < div className=" mx-auto ">
@@ -17,20 +40,20 @@ export default function MyProfile() {
       <div className="flex items-center justify-between rounded-md border-[1px] border-richblack-700 bg-richblack-800 p-8 px-12">
         <div className="flex items-center gap-x-4">
           <img
-            src={user?.image}
-            alt={`profile-${user?.firstName}`}
+            src={user?.Image }
+            alt={`profile-${user?.FirstName}`}
             className="aspect-square w-[78px] rounded-full object-cover"
           />
           <div className="space-y-1">
             <p className="text-lg font-semibold text-richblack-5">
               {user?.FirstName + " " + user?.LastName}
             </p>
-            <p className="text-sm text-richblack-300">{user?.email}</p>
+            <p className="text-sm text-richblack-300">{user?.Email}</p>
           </div>
         </div>
         <IconButton
           text="Edit"
-          onclick={() => {
+          onClick={() => {
             navigate("/dashboard/settings")
           }}
         >
@@ -42,7 +65,7 @@ export default function MyProfile() {
           <p className="text-lg font-semibold text-richblack-5">About</p>
           <IconButton
             text="Edit"
-            onclick={() => {
+            onClick={() => {
               navigate("/dashboard/settings")
             }}
           >
@@ -56,7 +79,7 @@ export default function MyProfile() {
               : "text-richblack-400"
           } text-sm font-medium`}
         >
-          {user?.AdditionalDetails?.about ?? "Write Something About Yourself"}
+          {user?.AdditionalDetails?.About ?? "Write Something About Yourself"}
         </p>
       </div>
       <div className="my-10 flex flex-col gap-y-10 rounded-md border-[1px] border-richblack-700 bg-richblack-800 p-8 px-12">
@@ -66,7 +89,7 @@ export default function MyProfile() {
           </p>
           <IconButton
             text="Edit"
-            onclick={() => {
+            onClick={() => {
               navigate("/dashboard/settings")
             }}
           >

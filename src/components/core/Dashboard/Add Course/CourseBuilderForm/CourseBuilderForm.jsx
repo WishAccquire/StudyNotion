@@ -96,10 +96,10 @@ function CourseBuilderForm() {
         setValue("sectionName",sectionName,{shouldDirty:true,shouldTouch:true,shouldValidate:true})
     }
   return (
-    <div className='text-white bg-[#161D29] p-6 rounded-lg'>
-      <p className='font-medium mb-2 text-2xl'>Course Builder</p>
+    <div className="space-y-8 rounded-md border-[1px] border-richblack-700 bg-richblack-800 p-6">
+      <p className="text-2xl font-semibold text-richblack-5">Course Builder</p>
       <form className='' onSubmit={handleSubmit(onSubmit)}>
-        <label htmlFor='sectionName' className='text-1xl font-medium'>Section Name <sup className='text-pink-200'>*</sup></label>
+        <label htmlFor='sectionName' className="text-sm text-richblack-5">Section Name <sup className='text-pink-200'>*</sup></label>
         <input
           id='sectionName'
           placeholder='Add Section Name'
@@ -111,7 +111,7 @@ function CourseBuilderForm() {
                 <span>Section Name is Required</span>
             )
         }
-        <div className='flex items-end gap-2 mb-3'>
+        <div className="flex items-end gap-x-4">
         <div className='mt-10  flex place-items-center gap-1  text-yellow-25   border-2 border-yellow rounded-lg p-3'>
         <IconButton type="Submit" text={editSection?"Edit Section Name":"Create Section"}  customclasses={"text-yellow "}  />
             <IoIosAddCircleOutline className='text-yellow-100 font-bold' size={20}/>
@@ -133,10 +133,10 @@ function CourseBuilderForm() {
       }
 
       <div className='flex justify-end gap-2'>
-        <button onClick={()=>GoBack()} className='bg-richblack-500 text-richblack-200 p-2 '>
+        <button onClick={()=>GoBack()} className='bg-richblack-500 text-richblack-200 px-[12px] py-[8px] rounded-md '>
             Back
         </button>
-        <IconButton text="Next" onClick={()=>gotonext()} customclasses={"text-white bg-yellow-50 p-2"}/>
+        <IconButton text="Next" onClick={()=>gotonext()} customclasses={"text-white bg-yellow-50 px-[12px] py-[8px] rounded-md"}/>
 
       </div>
 

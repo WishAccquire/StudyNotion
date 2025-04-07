@@ -1,6 +1,7 @@
 import React from 'react'
 import ContactForm from '../components/core/AboutPage/ContactForm'
 import Footer from '../components/common/footer'
+import ReviewSlider from '../components/common/ReviewSlider'
 
 function ContactUS() {
   return (
@@ -28,6 +29,8 @@ function ContactUS() {
                 <ContactForm/>
             </div>
         </div>
+        <div className='mx-auto flex justify-center'> <ReviewSlider /></div>
+       
         <Footer/>
       
     </div>

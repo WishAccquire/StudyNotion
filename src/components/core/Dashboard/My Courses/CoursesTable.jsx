@@ -31,6 +31,7 @@ function CoursesTable({courses,setCourses}) {
           if(result){
             setCourses(result);
           }
+          setConfirmationModal(null)
      }
   return (
     <div className='text-white'>
@@ -57,7 +58,7 @@ function CoursesTable({courses,setCourses}) {
                     (courses.map((course)=>(
                         <Tr key={course._id} className="flex gap-x-10 border-b border-richblack-800 px-6 py-8">
                             <Td className='flex flex-1 gap-x-4'>
-                                <img src={course?.Thumbnail} alt={course?.CourseTittle} className="h-[148px] w-[220px] rounded-lg object-cover"/>
+                                <img src={course?.ThumbNail} alt={course?.CourseTittle} className="h-[148px] w-[220px] rounded-lg object-cover"/>
                                 <div className="flex flex-col justify-between ">
                                      <p className="text-lg font-semibold text-richblack-5">{course.CourseTittle}</p>
                                      <p className="text-xs text-richblack-300">{course.CourseDescription}</p>

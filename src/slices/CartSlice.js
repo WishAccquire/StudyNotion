@@ -19,7 +19,9 @@ const CartSlice=createSlice({
   initialState,
   reducers: {
     addToCart: (state, action) => {
+      
       const course = action.payload
+      console.log(course)
       const index = state.cart.findIndex((item) => item._id === course._id)
 
       if (index >= 0) {
@@ -28,16 +30,21 @@ const CartSlice=createSlice({
         return
       }
       // If the course is not in the cart, add it to the cart
-      state.cart.push(course)
-      // Update the total quantity and price
-      state.totalItems++
-      state.total += course.price
+      const updatedCart = [...state.cart, course];
+      const updatedTotalItems = state.totalItems + 1;
+      const updatedTotal = state.total + course.Price;
       // Update to localstorage
-      localStorage.setItem("cart", JSON.stringify(state.cart))
-      localStorage.setItem("total", JSON.stringify(state.total))
-      localStorage.setItem("totalItems", JSON.stringify(state.totalItems))
+      localStorage.setItem("cart", JSON.stringify(updatedCart))
+      localStorage.setItem("total", JSON.stringify(updatedTotal))
+      localStorage.setItem("totalItems", JSON.stringify(updatedTotalItems))
       // show toast
       toast.success("Course added to cart")
+      return {
+        ...state,
+        cart: updatedCart,
+        totalItems: updatedTotalItems,
+        total: updatedTotal,
+      };
     },
     removeFromCart: (state, action) => {
       const courseId = action.payload
@@ -46,7 +53,7 @@ const CartSlice=createSlice({
       if (index >= 0) {
         // If the course is found in the cart, remove it
         state.totalItems--
-        state.total -= state.cart[index].price
+        state.total -= state.cart[index].Price
         state.cart.splice(index, 1)
         // Update to localstorage
         localStorage.setItem("cart", JSON.stringify(state.cart))

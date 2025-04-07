@@ -6,14 +6,15 @@ const { UploadImageToCloudinary } = require("../utils/ImageUploader")
 const {convertSecondsToDuration}=require("../utils/secToDuration")
 const Section =require("../models/Section")
 const SubSection =require("../models/SubSection")
+const CourseProgress =require("../models/CourseProgress")
 
 //create course handler function
 
 exports.CreateCourse = async (req, res) => {
     try {
         //fetch data
-        const { CourseTittle, CourseDescription, WhatLearn, Price, Tag ,Category} = req.body;
-        console.log(CourseTittle,CourseDescription,WhatLearn,Price,Tag,Category)
+        const { CourseTittle, CourseDescription, WhatLearn, Price, Tag ,Category,Instructtion} = req.body;
+        console.log(CourseTittle,CourseDescription,WhatLearn,Price,Tag,Category,Instructtion)
 
         //fetch file
         console.log("helo");
@@ -64,6 +65,7 @@ exports.CreateCourse = async (req, res) => {
             WhatLearn,
             Price,
             Tag,
+            Instructtion,
             Category:CategoryDetails._id,
             ThumbNail: thumbnailImages.secure_url,
         })
@@ -110,7 +112,7 @@ exports.CreateCourse = async (req, res) => {
 exports.getAllCourse = async (req, res) => {
     try {
 
-        const allcourse = await Course.find({}, { CourseTittle: true, CourseDescription: true, Price: true, ThumbNail: true, Instructor: true, Review: true, EnrollStudent: true }).populate("Instructor");
+        const allcourse = await Course.find({Status:"Published"}, { CourseTittle: true, CourseDescription: true, Price: true, ThumbNail: true, Instructor: true, Review: true, EnrollStudent: true }).populate("Instructor");
 
         console.log("All Courses", allcourse);
 
@@ -133,25 +135,26 @@ exports.getAllCourse = async (req, res) => {
 exports.getCourse = async (req, res) => {
     try {
         //get id
-        const { id } = req.body;
+        const { courseId } = req.params;
+        console.log("id:::",courseId);
         //find course details
-        const corseDetails = await Couse.findById({ _id: id })
+        const courseDetails = await Course.findById(courseId)
             .populate({
                 path: "Instructor",
                 populate: {
                     path: "AdditionalDetails",
                 }
             }).populate("Category")
-            .populate("RatingAndReview")
+            .populate("Review")
             .populate({
-                path:"CourseCotent",
+                path:"CourseContent",
                 populate:{
                     path:"Subsection"
                 }
             }).exec();
 
     //validation
-    if(!corseDetails){
+    if(!courseDetails){
         return res.status(400).json({
             success:false,
             message:`Couldn't find the Course with ${corseDetails}`
@@ -159,7 +162,7 @@ exports.getCourse = async (req, res) => {
     }
 
     let total=0;
-    corseDetails.CourseCotent.forEach((content)=>{
+    courseDetails.CourseContent.forEach((content)=>{
         content.Subsection.forEach((Subsection)=>{
             const time=parseInt(Subsection.TimeDuration)
             total+=time;
@@ -172,7 +175,7 @@ exports.getCourse = async (req, res) => {
         success:true,
         message:"Course Details is Fetched Successfully",
         data:{
-            corseDetails,
+            courseDetails,
             timeDuration
         }
     })
@@ -283,12 +286,12 @@ exports.editCourse = async (req, res) => {
       })
       .exec()
   
-      // let courseProgressCount = await CourseProgress.findOne({
-      //   courseID: courseId,
-      //   userId: userId,
-      // })
+      let courseProgressCount = await CourseProgress.findOne({
+        courseID: courseId,
+        userId: userId,
+      })
   
-      // console.log("courseProgressCount : ", courseProgressCount)
+      console.log("courseProgressCount : ", courseProgressCount)
   
       if (!courseDetails) {
         return res.status(400).json({
@@ -312,9 +315,9 @@ exports.editCourse = async (req, res) => {
         data: {
           courseDetails,
           timeDuration,
-          // completedVideos: courseProgressCount?.completedVideos
-          //   ? courseProgressCount?.completedVideos
-          //   : [],
+          completedVideos: courseProgressCount?.completedVideos
+            ? courseProgressCount?.completedVideos
+            : [],
         },
       })
     } catch (error) {

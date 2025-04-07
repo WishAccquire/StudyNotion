@@ -2,7 +2,9 @@ const Profile=require('../models/Profilr');
 const User=require('../models/User')
 const corn=require('node-cron');
 const {UploadImageToCloudinary}=require('../utils/ImageUploader')
-
+const {convertSecondsToDuration}=require('../utils/secToDuration')
+const CourseProgress=require('../models/CourseProgress')
+const Course =require('../models/Couse')
 corn.schedule("0 0 * * *",async()=>{
     try{
         const now = new Date();
@@ -29,14 +31,17 @@ exports.updateProfile=async(req,res)=>{
     try{
 
         //fetch data
-       const {Gender, DOB="", About="", ContactNumber} =req.body
+        
+       const {FirstName,LastName,Gender, DOB="", About="", ContactNumber} =req.body
+       console.log("fghj",req.body)
 
        //user id
        const id=req.user.id;
+       
 
 
        //validation
-       if(!Gender || !ContactNumber ||!id ){
+       if(!FirstName || !LastName || !Gender || !ContactNumber ||!id ){
         return res.status(401).json({
             success:false,
             message:"FILL ALL DETSILS"
@@ -44,18 +49,18 @@ exports.updateProfile=async(req,res)=>{
        }
 
        //profile .findById
-       const user=await User.findById(id);
+       const user=await User.findById(id)
        const ProfileId=user.AdditionalDetails;
 
        //udate profile
+       console.log(ProfileId)
        const updateProfile=await Profile.findByIdAndUpdate(ProfileId,{Gender, DOB, About, ContactNumber},{new:true});
-       await updateProfile.save();
-
-       console.log(updateProfile);
+       const updatedUser=await User.findByIdAndUpdate(id,{FirstName,LastName}).populate("AdditionalDetails").populate('CourseProgress').populate('Courses');
+       
 
        return res.status(201).json({
         success:true,
-        data:updateProfile,
+        data:updatedUser,
         message:"Profile UPDATION Successfully"
     })
 
@@ -71,9 +76,10 @@ exports.updateProfile=async(req,res)=>{
 exports.deleteProfile=async(req,res)=>{
     try{
        //user id
-       const {id}=req.user.id;
-       console.log(id);
-       const userDetails=await User.findById(id);
+       
+       const {userId}=req.query;
+       console.log(userId);
+       const userDetails=await User.findById(userId);
 
        //validation
        if(!userDetails){
@@ -157,29 +163,80 @@ exports.getEnrolledCourses = async (req, res) => {
       const userDetails = await User.findOne({
         _id: userId,
       })
-        .populate("Courses")
+      .populate({
+        path: "Courses",
+        populate: {
+            path: "CourseContent",
+            populate: {
+              path: "Subsection" // or whatever the field name is that contains subsections
+          }
+        }
+    })
         .exec()
-      if (!userDetails) {
-        return res.status(400).json({
+        
+        var SubsectionLength = 0
+        
+        for (var i = 0; i < userDetails.Courses.length; i++) {
+          var totalDurationInSeconds = 0
+          SubsectionLength = 0
+          for (var j = 0; j < userDetails.Courses[i].CourseContent.length; j++) {
+            
+            totalDurationInSeconds += userDetails.Courses[i].CourseContent[
+              j
+            ].Subsection.reduce((acc, curr) => acc + parseInt(curr.TimeDuration), 0)
+            
+
+            userDetails.Courses[i].timeDuration = convertSecondsToDuration(
+              totalDurationInSeconds
+            )
+            
+
+            SubsectionLength +=
+              userDetails.Courses[i].CourseContent[j].Subsection.length
+
+          }
+          console.log("drftgyhuji",SubsectionLength)
+          let courseProgressCount = await CourseProgress.findOne({
+            CourseId: userDetails.Courses[i]._id,
+            userId: userId,
+          })
+          console.log("drftgyhuji",courseProgressCount)
+
+          courseProgressCount = courseProgressCount?.CompleteVideo.length
+          if (SubsectionLength === 0) {
+            userDetails.Courses[i].progressPercentage = 100
+          } else {
+            // To make it up to 2 decimal point
+            const multiplier = Math.pow(10, 2)
+            userDetails.Courses[i].progressPercentage =
+              Math.round(
+                (courseProgressCount / SubsectionLength) * 100 * multiplier
+              ) / multiplier
+          }
+        }
+    
+        if (!userDetails) {
+          return res.status(400).json({
+            success: false,
+            message: `Could not find user with id: ${userDetails}`,
+          })
+        }
+        return res.status(200).json({
+          success: true,
+          data: userDetails.Courses,
+        })
+      } catch (error) {
+        return res.status(500).json({
           success: false,
-          message: `Could not find user with id: ${userDetails}`,
+          message: error.message,
         })
       }
-      return res.status(200).json({
-        success: true,
-        data: userDetails.Courses,
-      })
-    } catch (error) {
-      return res.status(500).json({
-        success: false,
-        message: error.message,
-      })
     }
-};
 
 exports.updateDisplayPicture = async (req, res) => {
     try {
         console.log("hello");
+        console.log("diasplay",req.files.displayPicture);
       const displayPicture = req.files.displayPicture
       const userId = req.user.id
       
@@ -189,7 +246,8 @@ exports.updateDisplayPicture = async (req, res) => {
         1000,
         1000
       )
-      console.log(image)
+      console.log("xdcfvgbhnjmkjhgfgh")
+     
       const updatedProfile = await User.findByIdAndUpdate(
         { _id: userId },
         { Image: image.secure_url },
@@ -207,3 +265,32 @@ exports.updateDisplayPicture = async (req, res) => {
       })
     }
 };
+
+exports.instructorDetails=async(req,res)=>{
+  try{
+    const coursedetails=await Course.find({Instructor:req.user.id});
+    const courseData=coursedetails.map((course)=>{
+      const totalStudentEnrolled=course.EnrollStudent.length
+      const totalAmountGenerated=totalStudentEnrolled*course.Price;
+
+      //create a new object with the addidtional field
+      const courseDatawithStats={
+        _id:course._id,
+        CourseTittle:course.CourseTittle,
+        CourseDescription:course.CourseDescription,
+        totalStudentEnrolled,
+        totalAmountGenerated,
+      }
+      return courseDatawithStats
+    })
+
+    res.status(200).json({success:true,courses:courseData})
+
+  }catch(err){
+     return res.status(500).json({
+      err:err.message,
+      success:flase,
+      data:"Internal Server Failure"
+     })
+  }
+}

@@ -6,18 +6,20 @@ const { default: mongoose } = require('mongoose');
 exports.creatingReview=async(req,res)=>{
     try{
         const userid=req.user.id;
-        const {CourseId,Rating,Review}=req.body;
+        const {courseId,Rating,Review}=req.body;
 
+        
 
-
-        if(!CourseId || !Rating ||!Review){
+        if(!courseId  ||!Review){
+        
             return res.status(404).json({
                 success:false,
                 message:"Fill All Details",
             })
         }
         //check if user is Enrolled
-        const couseDetail=await Course.findById(CourseId);
+        const couseDetail=await Course.findById(courseId);
+        console.log(couseDetail)
         if(!couseDetail.EnrollStudent.includes(userid)){
             return res.status(404).json({
                 success:false,
@@ -25,7 +27,7 @@ exports.creatingReview=async(req,res)=>{
             })
         }
         //check no multiplication Review
-        if(couseDetail.RatingAndReview.includes(userid)){
+        if(couseDetail.Review.includes(userid)){
             return res.status(404).json({
                 success:false,
                 message:"YOU HAVE Already REVIEW THE CONTENT",
@@ -36,11 +38,12 @@ exports.creatingReview=async(req,res)=>{
             User:userid,
             Review,
             Rating,
+            Course:courseId
         })
         //course ko update kar done
-        await Course.findByIdAndUpdate(CourseId,{
+        await Course.findByIdAndUpdate(courseId,{
             $push:{
-                RatingAndReview:reviewed._id,
+                 Review:reviewed._id,
             }
         },{new:true})
 

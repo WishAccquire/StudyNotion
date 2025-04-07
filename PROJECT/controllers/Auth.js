@@ -291,14 +291,15 @@ exports.login=async(req,res)=>{
 exports.ChangePassWord=async(req,res)=>{
     try{
         const{Email,PassWord,NewPassWord,ConfirmPassWord}=req.body;
+        
 
-        if (!PassWord || !Email || !NewPassWord || !ConfirmPassWord){
+        if (!PassWord || !Email || !NewPassWord ){
             return res.status(401).json({
                 success: false,
                 message: "Fill All Details"
             })
         }
-
+        
         const valid = validator.isEmail(Email);
         if (!valid) {
             return res.status(401).json({
@@ -307,37 +308,33 @@ exports.ChangePassWord=async(req,res)=>{
             })
         }
         
-        const checkEmail = await User.findOne({ Email });
-        if (!checkEmail) {
+        const user = await User.findOne({ Email });
+        if (!user) {
             return res.status(401).json({
                 success: false,
                 message: "The Email is not Register"
             })
         }
 
-        const user=await User.findOne({Email});
-
-        if(!user){
-            return res.status(401).json({
-                success: false,
-                message: "The User is Not Register"
-            })
-        }
 
 
+      
 
         if(await bcrypt.compare(PassWord,user.PassWord)){
-            if(NewPassWord!==ConfirmPassWord){
+            if(!NewPassWord){
                 return res.status(401).json({
                     success:false,
                     message:"Confirm Password and New Password Doesn't Match",
                 })
             }
-
+            
             const hashedPassword=await bcrypt.hash(NewPassWord,10);
+            
             const updatedUser=await User.findByIdAndUpdate(req.user.id,{PassWord:hashedPassword},{new:true})
+           
 
-           await  mail(updatedUser.Email,"Password Updated Successfully",`<h2>Password Updated for ${FirstName} ${LastName}</h2>`)
+           await  mail(updatedUser.Email,"Password Updated Successfully",`<h2>Password Updated for ${updatedUser.FirstName} ${updatedUser.LastName}</h2>`)
+           
 
             res.status(201).json({
                 success:true,
