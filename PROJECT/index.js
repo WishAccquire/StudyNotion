@@ -15,11 +15,22 @@ ConnectDb();
 //middleware 
 app.use(express.json());
 app.use(cookieParser());
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://study-notion-1iq1.vercel.app",
+  "https://study-notion-1iq1-k1134rf2c-wishaccquires-projects.vercel.app"
+];
+
 app.use(cors({
-     origin: ["http://localhost:3000", "https://study-notion-1iq1.vercel.app"],
-   
-    credentials:true,
-}))
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true,
+}));
 app.use(fileUpload({
     useTempFiles:true,
     tempFileDir:'/tmp/'
