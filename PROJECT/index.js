@@ -17,6 +17,7 @@ app.use(express.json());
 app.use(cookieParser());
 const allowedOrigins = [
     "http://localhost:3000",
+    "study-notion-wine-tau.vercel.app",
     "https://study-notion-1iq1.vercel.app",
     "https://study-notion-1iq1-k1134rf2c-wishaccquires-projects.vercel.app"
   ];
