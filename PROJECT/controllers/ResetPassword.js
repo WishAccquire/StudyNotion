@@ -40,8 +40,7 @@ exports.resetPasswordToken = async (req, res) => {
          console.log("Updated User Details:", updateDetails);
          console.log("hello")
         //link generate
-        const url=`http://localhost:3000/update-password/${token}`
-
+        const url=`https://study-notion-wine-tau.vercel.app/update-password/${token}`
         //send mail
          await mail(Email,"Password Reset Link",`Password Reset Link:${url}`)
 
@@ -89,18 +88,18 @@ exports.ResetPassword=async(req,res)=>{
         }
 
         //token time
-        if(userDetails.ResetPasswordExpires>Date.now()){
-            return res.status(401).json({
-                success: false,
-                message: "Token Expired Because Time Get Over"
-            })
-        }
+        if(userDetails.ResetPasswordExpires < Date.now()){
+    return res.status(401).json({
+        success: false,
+        message: "Token Expired Because Time Get Over"
+    })
+}
 
         //hashedPassword
         const hashedPassword=await bcrypt.hash(NewPassword,10);
 
         //db entry mein password update kar do
-        await User.findByIdAndUpdate({Token:Token},{PassWord:hashedPassword},{new:true})
+        await User.findOneAndUpdate({Token:Token},{PassWord:hashedPassword},{new:true})
 
 
         //res send
