@@ -1,0 +1,65 @@
+const mongoose=require('mongoose')
+
+const UserSchema=new mongoose.Schema({
+    FirstName:{
+        required:true,
+        type:String,
+        trim:true
+    },
+    LastName:{
+        required:true,
+        type:String,
+        trim:true
+    },
+    Email:{
+        required:true,
+        type:String,
+        trim:true
+    },
+    PassWord:{
+        required:true,
+        type:String
+    },
+    AccountType:{
+        type:String,
+        enum:["Admin","Student","Instructor"],
+        required:true,
+    },
+    AdditionalDetails:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"Profile",
+        required:true,
+    },
+    Courses:[{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"Course",
+    }],
+    Image:{
+        type:String,
+        required:true,
+    },
+    CourseProgress:[{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"CourseProgress",
+    }],
+    Token:{
+        type:String,
+    },
+    ResetPasswordExpires:{
+        type:Date
+    },
+    deletionSchedule:{
+        type:Date,
+        default:null,
+    },
+    Active:{
+        type:Boolean,
+        default:true,
+    },
+    Approved:{
+        type:Boolean,
+        default:true,
+    }
+},{timestamps:true})//when document is created and modified
+
+module.exports=mongoose.model("User",UserSchema);
