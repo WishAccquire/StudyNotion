@@ -12,7 +12,7 @@ function RenderCartAmount() {
     const dispatch=useDispatch()
     const handleBuyCourse=()=>{
        const courses=cart.map((course)=>course._id);
-       console.log(courses)
+       //console.log(courses)
        buyCourse(token,courses,user,navigate,dispatch)
     }
   return (

@@ -43,14 +43,14 @@ export async function buyCourse(token,courses,userDetails,navigate,dispatch){
         const orderResponse=await apiConnector("POST",COURSE_PAYMENT_API,{courses},{
             Authorization:`Bearer ${token}`
         })
-        console.log("responsesss:",orderResponse.data.message)
+        //console.log("responsesss:",orderResponse.data.message)
 
         if(!orderResponse.data.success){
             throw new Error(orderResponse.data.message);
         }
 
         //option create karna
-        console.log(process.env.REACT_APP_RAZORPAY_KEY)
+        //console.log(process.env.REACT_APP_RAZORPAY_KEY)
         const option={
             key:process.env.REACT_APP_RAZORPAY_KEY,
             currency:orderResponse.data.message.currency,

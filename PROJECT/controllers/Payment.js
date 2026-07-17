@@ -63,7 +63,7 @@ exports.CaptureThePayment=async(req,res)=>{
             })
 
         }catch(err){
-            console.error("🔥 Razorpay Error:", err)
+            console.error("Razorpay Error:", err)
             return res.status(500).json({
                 success:false,
                 message:"Failed to Create instance in payment ",
@@ -140,9 +140,9 @@ const enrollStudent=async(courses,usersId,res)=>{
 
         }catch(err){
             return res.status(500).json({
-                success:true,
+                success:false,
                 data:err.message,
-                messgae:"Failed to Enrolled Student In Course"
+                message:"Failed to Enrolled Student In Course"
             })
         }
     }
