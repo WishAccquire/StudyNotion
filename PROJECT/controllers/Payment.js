@@ -74,80 +74,92 @@ exports.CaptureThePayment=async(req,res)=>{
       
 }
 
-exports.verifyPayment=async(req,res)=>{
-    const razorpay_order_id=req.body?.razorpay_order_id;
-    const razorpay_payment_id=req.body?.razorpay_payment_id;
-    const razorpay_signature=req.body?.razorpay_signature
-
-    const courses=req.body?.courses;
-    const userid=req.user.id;
+exports.verifyPayment = async (req, res) => {
+    const { razorpay_order_id, razorpay_payment_id, razorpay_signature, courses, amount } = req.body;
+    const userid = req.user.id;
     
-    if(!razorpay_order_id || !razorpay_payment_id || !razorpay_signature || !courses || !userid){
-        return res.status(200).json({success:false,message:"Payment Failed"})
+    if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature || !courses || !userid) {
+        return res.status(400).json({ success: false, message: "Payment Verification Fields Missing" });
     }
 
-    let body=razorpay_order_id+ "|"+razorpay_payment_id;
-    const expectedSignature=crypto
-          .createHmac("sha256",process.env.RAZORPAY_SECRET)
+    let body = razorpay_order_id + "|" + razorpay_payment_id;
+    const expectedSignature = crypto
+          .createHmac("sha256", process.env.RAZORPAY_SECRET)
           .update(body.toString())
           .digest("hex");
 
-    if(expectedSignature===razorpay_signature){
-        //enrool kar va do
-        await enrollStudent(courses,userid,res)
-
-        return res.status(200).json({success:true,message:"Payment Verified"});
-    }
-    return res.status(500).json({success:false,message:"Payment Failed"});
-}
-
-const enrollStudent=async(courses,usersId,res)=>{
-       if(!courses || !usersId){
-          return res.status(400).json({success:false , message:"Please Provide data for Courses or UserId"})
-       }
-       
-       for(const courseId of courses){
-        try{   
-            const enrollCourse=await Course.findByIdAndUpdate({_id:courseId},{$push:{EnrollStudent:usersId}},{new:true})
-            
-        if(!enrollCourse){
-            return res.status(500).json({
-                success:false,
-                message:"Course Not Found"
-            })
-        }
+    if (expectedSignature === razorpay_signature) {
+        // 1. Pehle database mein safely enroll karwao
+        const enrollmentResult = await enrollStudent(courses, userid, amount, razorpay_order_id, razorpay_payment_id);
         
-        const courseProgress=await CourseProgress.create({
-            CourseId:courseId,
-            userId:usersId,
-            CompleteVideo:[]
-        })
-
-        //find the student and add the course in their list of enrollment
-        //console.log("enrollCourse:",usersId);
-        const enrollStudent=await User.findByIdAndUpdate({_id:usersId},
-            {
-                $push:{
-                    Courses:courseId,
-                    CourseProgress:courseProgress._id
-                }
-            },{new:true},
-        )
-        //console.log("enrollstudent:",enrollStudent)
-         //bache ko mail send kardo
-       const emailResponse=await mail(enrollStudent.Email,`SuccessFully Enrolled into ${enrollCourse.CourseTittle}`,courseEnrollmentEmail(enrollCourse.CourseTittle,`${enrollStudent.FirstName}`))
-      //console.log("Email Sent Successfully",emailResponse.response)
-
-        }catch(err){
-            return res.status(500).json({
-                success:false,
-                data:err.message,
-                message:"Failed to Enrolled Student In Course"
-            })
+        if(enrollmentResult.success) {
+            return res.status(200).json({ success: true, message: "Payment Verified and Enrolled Successfully" });
+        } else {
+            return res.status(500).json({ success: false, message: enrollmentResult.message });
         }
     }
+    return res.status(400).json({ success: false, message: "Invalid Signature, Payment Failed" });
 }
 
+const enrollStudent = async (courses, usersId, amount, orderId, paymentId) => {
+    // Database ACID consistency ke liye session start karenge
+    const session = await mongoose.startSession();
+    session.startTransaction();
+
+    try {   
+        const enrolledCoursesTitles = [];
+        const student = await User.findById(usersId).session(session);
+        
+        if(!student) throw new Error("User not found");
+
+        for (const courseId of courses) {
+            const enrollCourse = await Course.findByIdAndUpdate(
+                { _id: courseId },
+                { $push: { EnrollStudent: usersId } },
+                { new: true, session } // session pass kiya taaki agar fail ho toh rollback ho sake
+            );
+            
+            if (!enrollCourse) throw new Error(`Course not found: ${courseId}`);
+            enrolledCoursesTitles.push(enrollCourse.CourseTittle);
+            
+            const courseProgress = await CourseProgress.create(
+                [{ CourseId: courseId, userId: usersId, CompleteVideo: [] }],
+                { session }
+            );
+
+            await User.findByIdAndUpdate(
+                { _id: usersId },
+                { $push: { Courses: courseId, CourseProgress: courseProgress[0]._id } },
+                { new: true, session }
+            );
+        }
+
+        // Agar saare DB operations bina kisi error ke pure ho gaye, toh save karo permanently
+        await session.commitTransaction();
+        session.endSession();
+
+        // 2. DB Commit hone ke baad hi Emails trigger hongi (Zero Race Condition)
+        // Aap yahan se dono email background mein bina 'await' kiye ya async bhej sakte hain
+        try {
+            // Course enrollment mail
+            await mail(student.Email, `Successfully Enrolled`, courseEnrollmentEmail(enrolledCoursesTitles.join(", "), student.FirstName));
+            // Payment success receipt mail
+            await mail(student.Email, `Payment Received`, paymentSuccessEmail(student.FirstName, amount / 100, orderId, paymentId));
+        } catch (mailErr) {
+            console.error("Email sending failed but user is safely enrolled:", mailErr);
+            // Email fail hone se user ka course block nahi hoga, data consistent rahega.
+        }
+
+        return { success: true };
+
+    } catch (err) {
+        // Agar loop mein ek bhi jagah error aaya, toh pura database pehle jaisa ho jayega (Rollback)
+        await session.abortTransaction();
+        session.endSession();
+        console.error("Enrollment Transaction Aborted:", err.message);
+        return { success: false, message: err.message };
+    }
+}
 exports.sendPaymentSuccessEmail=async(req,res)=>{
     const {orderId,paymentId,amount} =req.body;
     const userId=req.user.id;
