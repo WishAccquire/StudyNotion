@@ -10,7 +10,7 @@ exports.CreateSubSection=async(req,res)=>{
         
         
         const VideoFile=req.files.VideoURL;
-        console.log("xdcfvgbhnjmkkmjuhytrf",VideoFile)
+        //console.log("xdcfvgbhnjmkkmjuhytrf",VideoFile)
         
         
 
@@ -54,7 +54,7 @@ exports.CreateSubSection=async(req,res)=>{
 
 
         //res
-        console.log("hello")
+        //console.log("hello")
         return res.status(201).json({
             success:true,
             data:UpdateSection,

@@ -115,7 +115,7 @@ exports.categoryPageDetails=async(req,res)=>{
           populate:"Instructor"
         })
         .exec()
-      console.log()
+      //console.log()
       // Get top-selling courses across all categories
       const allCategories = await Category.find()
         .populate({
@@ -131,7 +131,7 @@ exports.categoryPageDetails=async(req,res)=>{
       const mostSellingCourses = allCourses
         .sort((a, b) => b.sold - a.sold)
         
-        console.log("most selling",mostSellingCourses)
+        //console.log("most selling",mostSellingCourses)
   
       res.status(200).json({
         success: true,

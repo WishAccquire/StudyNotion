@@ -49,7 +49,7 @@ function SignupForm() {
       ...formData,
       AccountType,
     }
-    console.log("Hello")
+    //console.log("Hello")
     dispatch(sendOtp(formData.Email, navigate))
     // Setting signup data to state
     // To be used after otp verification

@@ -19,7 +19,7 @@ exports.creatingReview=async(req,res)=>{
         }
         //check if user is Enrolled
         const couseDetail=await Course.findById(courseId);
-        console.log(couseDetail)
+        //console.log(couseDetail)
         if(!couseDetail.EnrollStudent.includes(userid)){
             return res.status(404).json({
                 success:false,

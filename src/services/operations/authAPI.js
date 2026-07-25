@@ -25,10 +25,10 @@ export function sendOtp(Email, navigate) {
         Email,
         checkUserPresent: true,
       })
-      console.log("SENDOTP API RESPONSE............", response)
-      console.log("hello")
+      //console.log("SENDOTP API RESPONSE............", response)
+      //console.log("hello")
 
-      console.log(response.data.success)
+      //console.log(response.data.success)
      
 
       if (!response.data.success) {
@@ -70,7 +70,7 @@ export function signUp(
         otp,
       })
 
-      console.log("SIGNUP API RESPONSE............", response)
+      //console.log("SIGNUP API RESPONSE............", response)
 
       if (!response.data.success) {
         throw new Error(response.data.message)
@@ -97,7 +97,7 @@ export function login(Email, PassWord, navigate) {
         PassWord,
       })
 
-      console.log("LOGIN API RESPONSE............", response)
+      //console.log("LOGIN API RESPONSE............", response)
 
       if (!response.data.success) {
         throw new Error(response.data.message)
@@ -144,7 +144,7 @@ export function getPasswordResetToken(Email,setEmailSent){
       
        const response=await apiConnector("POST",RESETPASSTOKEN_API,{Email})
       
-       console.log("API Response:", response);
+       //console.log("API Response:", response);
        if(!response.data.success){
         throw new Error(response.data.message);
        }
@@ -165,14 +165,15 @@ export function resetPassword(NewPassword,ConfirmPassword,Token){
     dispatch(setLoading(true));
     try{
       const response=await apiConnector("POST",RESETPASSWORD_API,{NewPassword,ConfirmPassword,Token});
-      console.log("the response....",response);
-      console.log(response)
+      //console.log("the response....",response);
+      //console.log(response)
       if(!response.data.success){
         throw new Error("Fail to Reset Password.....",response.data.success)
       }
 
       toast.success("Password Reset Successfully")
       dispatch(setLoading(false));
+      //navigate("/login");
 
     }catch(err){
       console.log("The password reset failed");

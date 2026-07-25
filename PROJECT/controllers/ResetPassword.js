@@ -30,15 +30,15 @@ exports.resetPasswordToken = async (req, res) => {
         //generate token
        
         const token=crypto.randomBytes(20).toString("hex");
-        console.log("Generated token",token)
+        //console.log("Generated token",token)
         
         //update user by adding token and expiration time
          const updateDetails=await User.findOneAndUpdate({Email},{
            Token: token,
            ResetPasswordExpires:Date.now()+ 24*60*1000
          },{new:true})
-         console.log("Updated User Details:", updateDetails);
-         console.log("hello")
+         //console.log("Updated User Details:", updateDetails);
+         //console.log("hello")
         //link generate
         const url=`https://study-notion-wine-tau.vercel.app/update-password/${token}`
         //send mail
@@ -74,7 +74,7 @@ exports.ResetPassword=async(req,res)=>{
                 message: "Password Doesn't Matched"
             })
         }
-        console.log("Generated token",Token)
+        //console.log("Generated token",Token)
 
         //token->user entry lane ke liye
         const userDetails=await User.findOne({Token:Token});

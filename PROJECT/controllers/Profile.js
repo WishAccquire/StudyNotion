@@ -21,7 +21,7 @@ corn.schedule("0 0 * * *",async()=>{
 
         
 
-        console.log("Scheduled account deletion complete.");
+        //console.log("Scheduled account deletion complete.");
 
     }catch(err){
         console.error("Error during scheduled account deletion:", err.message);
@@ -144,7 +144,7 @@ exports.getAllUserDetails = async (req, res) => {
 		const userDetails = await User.findById(id)
 			.populate("AdditionalDetails")
 			.exec();
-		console.log(userDetails);
+		//console.log(userDetails);
 		res.status(200).json({
 			success: true,
 			message: "User Data fetched successfully",
@@ -236,8 +236,8 @@ exports.getEnrolledCourses = async (req, res) => {
 
 exports.updateDisplayPicture = async (req, res) => {
     try {
-        console.log("hello");
-        console.log("diasplay",req.files.displayPicture);
+        //console.log("hello");
+        //console.log("diasplay",req.files.displayPicture);
       const displayPicture = req.files.displayPicture
       const userId = req.user.id
       
@@ -247,7 +247,7 @@ exports.updateDisplayPicture = async (req, res) => {
         1000,
         1000
       )
-      console.log("xdcfvgbhnjmkjhgfgh")
+      //console.log("xdcfvgbhnjmkjhgfgh")
      
       const updatedProfile = await User.findByIdAndUpdate(
         { _id: userId },

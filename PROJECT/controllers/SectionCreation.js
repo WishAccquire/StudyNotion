@@ -112,7 +112,7 @@ exports.DeleteSection=async(req,res)=>{
         //id fetch assuming we are sending id
         const {sectionID,courseId}=req.body;
         //find and DeleteSection
-        console.log("section id",sectionID);
+        //console.log("section id",sectionID);
         const section = await Section.findById(sectionID);
         if (!section) {
             return res.status(404).json({

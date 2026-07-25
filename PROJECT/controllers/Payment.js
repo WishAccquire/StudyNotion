@@ -168,7 +168,7 @@ exports.sendPaymentSuccessEmail=async(req,res)=>{
         return res.status(400).json({success:false,message:"Please provide all the field"})
     }
     try{
-        console.log(userId,paymentId,amount)
+        //console.log(userId,paymentId,amount)
        const enrollStudent=await User.findById(userId);
        
        await mail(

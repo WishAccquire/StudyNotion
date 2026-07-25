@@ -17,7 +17,7 @@ exports.mail = async (email, title, body) => {
             throw new Error(info.error.message);
         }
 
-        console.log("integrated", info);
+        //console.log("integrated", info);
 
         return info;
 

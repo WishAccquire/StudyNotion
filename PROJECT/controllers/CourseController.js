@@ -14,12 +14,12 @@ exports.CreateCourse = async (req, res) => {
     try {
         //fetch data
         const { CourseTittle, CourseDescription, WhatLearn, Price, Tag ,Category,Instructtion} = req.body;
-        console.log(CourseTittle,CourseDescription,WhatLearn,Price,Tag,Category,Instructtion)
+        //console.log(CourseTittle,CourseDescription,WhatLearn,Price,Tag,Category,Instructtion)
 
         //fetch file
-        console.log("helo");
+        //console.log("helo");
         const thumbnail = req.files.ThumbNail
-        console.log("helo",thumbnail);
+        //  console.log("helo",thumbnail);
         //validation
         if (!CourseTittle || !CourseDescription || !WhatLearn || !Price || !Tag  || !Category || !thumbnail) {
             return res.status(400).json({
@@ -32,7 +32,7 @@ exports.CreateCourse = async (req, res) => {
         //check Instructor
         const userId = req.user.id;
         const instructorDetails = await User.findById(userId,{AccountType:"Instructor"});
-        console.log("Instructor Details:", instructorDetails);
+        //console.log("Instructor Details:", instructorDetails);
 
         if (!instructorDetails) {
             return res.status(404).json({
@@ -53,10 +53,10 @@ exports.CreateCourse = async (req, res) => {
         }
         
         //Upload image cloudinary
-        console.log("helo");
+        //console.log("helo");
 
         const thumbnailImages = await UploadImageToCloudinary(thumbnail,process.env.FOLDER_NAME);
-        console.log("helo");
+        //console.log("helo");
 
         const newCource = await Course.create({
             CourseTittle,
@@ -69,7 +69,7 @@ exports.CreateCourse = async (req, res) => {
             Category:CategoryDetails._id,
             ThumbNail: thumbnailImages.secure_url,
         })
-        console.log("helo");
+        //console.log("helo");
 
         //user Update
 
@@ -84,7 +84,7 @@ exports.CreateCourse = async (req, res) => {
         )
 
         //update the Schema Tag
-        console.log("hello");
+        //console.log("hello");
         await CategoryM.findByIdAndUpdate({_id: CategoryDetails._id }, {
             $push: {
                 Course: newCource._id,
@@ -114,7 +114,7 @@ exports.getAllCourse = async (req, res) => {
 
         const allcourse = await Course.find({Status:"Published"}, { CourseTittle: true, CourseDescription: true, Price: true, ThumbNail: true, Instructor: true, Review: true, EnrollStudent: true }).populate("Instructor");
 
-        console.log("All Courses", allcourse);
+        //console.log("All Courses", allcourse);
 
         res.status(201).json({
 
@@ -136,7 +136,7 @@ exports.getCourse = async (req, res) => {
     try {
         //get id
         const { courseId } = req.params;
-        console.log("id:::",courseId);
+        //console.log("id:::",courseId);
         //find course details
         const courseDetails = await Course.findById(courseId)
             .populate({
@@ -191,11 +191,11 @@ exports.getCourse = async (req, res) => {
 
 exports.editCourse = async (req, res) => {
     try {
-      console.log("hello mein vishaka")
+      //console.log("hello mein vishaka")
       const { courseId } = req.body
-      console.log("courseId",courseId);
+      //console.log("courseId",courseId);
       const updates = req.body
-      console.log(updates);
+      //console.log(updates);
       const course = await Course.findById(courseId)
   
       if (!course) {
@@ -204,8 +204,8 @@ exports.editCourse = async (req, res) => {
   
       
       if (req.files) {
-        console.log("thumbnail update")
-        console.log(req.files);
+        //console.log("thumbnail update")
+        //console.log(req.files);
         const thumbnail = req.files.ThumbNail
         const thumbnailImage = await UploadImageToCloudinary(
           thumbnail,
@@ -213,7 +213,7 @@ exports.editCourse = async (req, res) => {
         )
         course.ThumbNail = thumbnailImage.secure_url
       }
-      console.log("hello kya hal chal");
+      //console.log("hello kya hal chal");
   
       // Update only the fields that are present in the request body
       for (const key in updates) {
@@ -225,7 +225,7 @@ exports.editCourse = async (req, res) => {
           }
         }
       }
-      console.log("hello kya hal chal");
+      //console.log("hello kya hal chal");
   
       await course.save()
   
@@ -291,7 +291,7 @@ exports.editCourse = async (req, res) => {
         userId: userId,
       })
   
-      console.log("courseProgressCount : ", courseProgressCount)
+      //console.log("courseProgressCount : ", courseProgressCount)
   
       if (!courseDetails) {
         return res.status(400).json({
@@ -332,7 +332,7 @@ exports.editCourse = async (req, res) => {
     try {
       
       const { courseId } = req.body
-      console.log("courseid",req.body)
+      //console.log("courseid",req.body)
   
       
       const course = await Course.findById(courseId)
