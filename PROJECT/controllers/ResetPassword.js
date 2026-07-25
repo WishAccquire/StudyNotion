@@ -99,7 +99,16 @@ exports.ResetPassword=async(req,res)=>{
         const hashedPassword=await bcrypt.hash(NewPassword,10);
 
         //db entry mein password update kar do
-        await User.findOneAndUpdate({Token:Token},{PassWord:hashedPassword},{new:true})
+        // db entry mein password update karo + token invalid/null karo
+await User.findOneAndUpdate(
+    { Token: Token },
+    {
+        PassWord: hashedPassword,
+        Token: null,                     // <--- Token null kar diya
+        ResetPasswordExpires: null       // <--- Expiry bhi reset kar di
+    },
+    { new: true }
+);
 
 
         //res send
