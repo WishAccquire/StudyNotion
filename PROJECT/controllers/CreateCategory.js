@@ -111,8 +111,10 @@ exports.categoryPageDetails=async(req,res)=>{
         .populate({
           path: "Course",
           match: { Status: "Published" },
-          populate: "Review",
-          populate:"Instructor"
+          populate:[
+            { path: "Review" },
+            { path: "Instructor" }
+          ]
         })
         .exec()
       //console.log()
@@ -120,9 +122,11 @@ exports.categoryPageDetails=async(req,res)=>{
       const allCategories = await Category.find()
         .populate({
           path: "Course",
-          match: { status: "Published" },
-          populate: "Review",
-          populate:"Instructor"
+          match: { Status: "Published" },
+          populate: [
+            { path: "Review" },
+            { path: "Instructor" }
+          ]
         })
         .exec()
        

@@ -23,10 +23,10 @@ function CoursesTable({courses,setCourses}) {
           
           await deleteCourse({courseId:courseId},token);
           
-          console.log("hello in adva",courses)
+          //console.log("hello in adva",courses)
 
           const result=await fetchInstructorCourses(token);
-          console.log("fetched courses",result);
+          //console.log("fetched courses",result);
           
           if(result){
             setCourses(result);

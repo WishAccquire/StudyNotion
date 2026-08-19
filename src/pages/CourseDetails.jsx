@@ -32,7 +32,7 @@ function CourseDetails() {
   const [response, setResponse] = useState(null)
   const [isActive,setIsActive]=useState(Array(0));
   const handleActive=(id)=>{
-    console.log("section id:",id,isActive)
+    //console.log("section id:",id,isActive)
     setIsActive((prev) =>
       prev.includes(id) ? prev.filter((e) => e !== id) : [...prev, id]
     );
@@ -58,7 +58,7 @@ function CourseDetails() {
       try {
        
         const res = await fetchCourseDetails(courseId);
-        console.log("fhjmklokijuhygtf",res);
+        // console.log("fhjmklokijuhygtf",res);
         setCourseData(res);
 
       } catch (err) {

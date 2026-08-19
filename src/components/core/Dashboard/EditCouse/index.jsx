@@ -16,7 +16,7 @@ function EditCourse() {
         const populateCourse = async () => {
             setLoading(true);
             const result = await getFullDetailsOfCourse(courseId, token)
-            console.log("get full coursse details: ", result.courseDetails);
+            //console.log("get full coursse details: ", result.courseDetails);
             if (result.courseDetails) {
                 dispatch(setEditCourse(true));
                 dispatch(setCourse(result.courseDetails));

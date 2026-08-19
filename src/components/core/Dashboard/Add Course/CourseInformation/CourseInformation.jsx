@@ -37,7 +37,7 @@ function CourseInformation() {
         setLoading(true);
         
         const categories=await fetchCourseCategories();
-        console.log("hello categories ", categories);
+        //console.log("hello categories ", categories);
         if(categories.length>0){
             setCourseCategories(categories);
         }
@@ -77,7 +77,7 @@ function CourseInformation() {
      }
 
      const onSubmit=async(data)=>{
-        console.log("hello submit mein hoon")
+        //console.log("hello submit mein hoon")
          if(editCourse){
             if(isFornUpdated()){
                 const currentValues=getValues();
@@ -110,7 +110,7 @@ function CourseInformation() {
                 }
     
                 setLoading(true);
-                console.log("hello123",formData)
+                //console.log("hello123",formData)
                 const result=await editCourseDetails(formData,token);
                 setLoading(false);
                 if(result){
@@ -124,7 +124,7 @@ function CourseInformation() {
              return;
          }
 
-         console.log("datais here",data);
+         //console.log("datais here",data);
 
          const formData=new FormData();
          formData.append("CourseTittle",data.courseTittle);
